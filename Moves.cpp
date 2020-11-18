@@ -371,7 +371,7 @@ void Moves::p_PossiblePW(Bitboard bb, long long cMask, long long pMask, long lon
 	if ((WP & PINNED_PIECES) != 0) {
 		long long pinnedWP = (WP & PINNED_PIECES);
 
-		list.append(pinnedPawnMoves(bb, pinnedWP, cMask, pMask, WHITE));
+		pinnedPawnMoves(bb, pinnedWP, cMask, pMask, WHITE);
 	}
 
 }
@@ -1179,9 +1179,8 @@ long long Moves::genPinMask(Bitboard bb, int sqr, Color side) {
 	}
 }
 
-string Moves::pinnedPawnMoves(Bitboard bb, long long pinnedP, long long cMask, long long pMask, Color side) {
+void Moves::pinnedPawnMoves(Bitboard bb, long long pinnedP, long long cMask, long long pMask, Color side) {
 	long long PINNED_PAWN_MOVES = 0LL;
-	string retList = "";
 	Move tMove;
 	if (side == WHITE) {
 		for (int i = 0; i < 64; i++)
@@ -1205,19 +1204,37 @@ string Moves::pinnedPawnMoves(Bitboard bb, long long pinnedP, long long cMask, l
 					if (((PINNED_PAWN_MOVES >> j) & 1) == 1) {
 						x2 = (8 - (j % 8));
 						y2 = ((j / 8) + 1);
-						retList.append(" ").append(to_string(x1)).append(to_string(y1)).append("PP").append(to_string(x2)).append(to_string(y2));
 
 						tMove.start = i;
 						tMove.dest = j;
+						//Found pinned-pawn promotion
+						if (((1LL << j) & (RANK_8)) == 1) {
+							tMove.t = QPROMOTION;
+							moveList[numMoves] = tMove;
+							numMoves++;
 
-						if (isCapture(j)) {
+							tMove.t = NPROMOTION;
+							moveList[numMoves] = tMove;
+							numMoves++;
+
+							tMove.t = BPROMOTION;
+							moveList[numMoves] = tMove;
+							numMoves++;
+
+							tMove.t = RPROMOTION;
+							moveList[numMoves] = tMove;
+							numMoves++;
+						}
+						else if (isCapture(j)) {
 							tMove.t = CAPTURE;
+							moveList[numMoves] = tMove;
+							numMoves++;
 						}
 						else {
 							tMove.t = QUIET;
+							moveList[numMoves] = tMove;
+							numMoves++;
 						}
-						moveList[numMoves] = tMove;
-						numMoves++;
 					}
 				}
 			}
@@ -1245,24 +1262,42 @@ string Moves::pinnedPawnMoves(Bitboard bb, long long pinnedP, long long cMask, l
 					if (((PINNED_PAWN_MOVES >> j) & 1) == 1) {
 						x2 = (8 - (j % 8));
 						y2 = ((j / 8) + 1);
-						retList.append(" ").append(to_string(x1)).append(to_string(y1)).append("PP").append(to_string(x2)).append(to_string(y2));
 
 						tMove.start = i;
 						tMove.dest = j;
-						if (isCapture(j)) {
+						//Found pinned-pawn promotion
+						if (((1LL << j) & (RANK_8)) == 1) {
+							tMove.t = qPROMOTION;
+							moveList[numMoves] = tMove;
+							numMoves++;
+
+							tMove.t = nPROMOTION;
+							moveList[numMoves] = tMove;
+							numMoves++;
+
+							tMove.t = bPROMOTION;
+							moveList[numMoves] = tMove;
+							numMoves++;
+
+							tMove.t = rPROMOTION;
+							moveList[numMoves] = tMove;
+							numMoves++;
+						}
+						else if (isCapture(j)) {
 							tMove.t = CAPTURE;
+							moveList[numMoves] = tMove;
+							numMoves++;
 						}
 						else {
 							tMove.t = QUIET;
+							moveList[numMoves] = tMove;
+							numMoves++;
 						}
-						moveList[numMoves] = tMove;
-						numMoves++;
 					}
 				}
 			}
 		}
 	}
-	return retList;
 }
 
 long long Moves::p_HorVerMoves(int s) {

@@ -117,7 +117,7 @@ private:
 	long long findPinnedPieces(Bitboard bb, Color side);
 	bool isPinned(int sqr, long long pinned);
 	long long genPinMask(Bitboard bb, int sqr, Color side);
-	string pinnedPawnMoves(Bitboard bb, long long pinnedP, long long cMask, long long pMask, Color side);
+	void pinnedPawnMoves(Bitboard bb, long long pinnedP, long long cMask, long long pMask, Color side);
 
 	//Returns piece attack bitboards
 	//TODO:: add specific occupied parameter or make multiple in class
